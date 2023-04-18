@@ -8,7 +8,7 @@ const addNoteHandler = (request, h) => {
   const updatedAt = createdAt;
 
   const newNote = {
-    title, tags, body, id, createdAt, updatedAt,
+    title: title || '', tags: tags || '', body: body || '', id, createdAt, updatedAt,
   };
   notes.push(newNote);
 
@@ -66,14 +66,12 @@ const editNoteByIdHandler = (request, h) => {
 
   const index = notes.findIndex((note) => note.id === id);
 
-  console.log({ id, notes });
-
   if (index !== -1) {
     notes[index] = {
       ...notes[index],
-      title,
-      tags,
-      body,
+      title: title || notes[index].title,
+      tags: tags || notes[index].tags,
+      body: body || notes[index].body,
       updatedAt,
     };
     const response = h.response({
@@ -113,6 +111,5 @@ const deleteNoteByIdHandler = (request, h) => {
 };
 
 module.exports = {
-  // eslint-disable-next-line max-len
   addNoteHandler, getAllNotesHandler, getNoteByIdHandler, editNoteByIdHandler, deleteNoteByIdHandler,
 };
