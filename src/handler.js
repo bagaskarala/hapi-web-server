@@ -1,4 +1,5 @@
 const { nanoid } = require('nanoid');
+const axios = require('axios');
 const notes = require('./notes');
 
 const addNoteHandler = (request, h) => {
@@ -110,6 +111,25 @@ const deleteNoteByIdHandler = (request, h) => {
   });
 };
 
+const getMasterData = async (request, h) => {
+  const { filter } = request.query;
+
+  try {
+    const { data } = await axios.get('https://raw.githubusercontent.com/typicode/jsonplaceholder/master/data.json');
+    const filteredData = filter ? data[filter] : data;
+    return h.response({
+      status: 'success',
+      message: 'Success get master data',
+      data: filteredData || [],
+    }).code(200);
+  } catch (error) {
+    return h.response({
+      status: error.response?.statusText || 'failed',
+      message: error.response?.data || 'Internal server error',
+    }).code(error.response?.status || 500);
+  }
+};
+
 module.exports = {
-  addNoteHandler, getAllNotesHandler, getNoteByIdHandler, editNoteByIdHandler, deleteNoteByIdHandler,
+  addNoteHandler, getAllNotesHandler, getNoteByIdHandler, editNoteByIdHandler, deleteNoteByIdHandler, getMasterData,
 };
